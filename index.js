@@ -1,48 +1,30 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
-const uploadRoutes = require("./routes/uploadRoutes");
-const Path = require("path");
-const User = require("./models/User");
-const userRoutes = require("./routes/userRoutes");
-const e = require("express");
-
-
-
+const connectDB = require("./config/db");
+const cors = require("cors");
 
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 5000;
+
+// Database connect
+connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-
-
-
-// MongoDB connect
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => console.log("MongoDB Connected..."))
-    .catch(err => console.log(err));
+// Routes
+app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/category", require("./routes/categoryRoutes"));
+app.use("/api/enquiry", require("./routes/enquiryRoutes"));
 
 // Default route
-app.use("/users", userRoutes); 
-app.use('/auth', userRoutes);
-app.use('/api',uploadRoutes);
-
-
-app.use('/uploads', express.static(Path.join(__dirname,'uploads')));
-
-
-app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
+app.get("/", (req, res) => {
+  res.send("server is running...");
+});
 
 // Server listen
-app.listen(5000, () => {
-    console.log(`Server running on port ${ 5000 }`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
