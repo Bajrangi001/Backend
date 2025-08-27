@@ -1,60 +1,49 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
-// const SECRET = process.env.JWT_SECRET;
-const authMiddleware = require("../middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
 
-const SECRET = process.env.JWT_SECRET || "MY_SECRET_KEY";
+const generateToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-// REGISTER ADMIN
-exports.registerAdmin = async (req, res) => {
+exports.registerAdmin = async(req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
+    if (!name || !email || !password)
+      return res.status(400).json({ message: "Missing fields" });
 
-    // Check if already exists
-    const existingAdmin = await Admin.findOne({ email });
-    if (existingAdmin) {
-      return res.status(400).json({ msg: "Admin already exists" });
-    }
+    const exists = await Admin.findOne({ email });
+    if (exists) return res.status(400).json({ message: "Email already used" });
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newAdmin = new Admin({
-      username,
+const newadmin = new Admin({
+      name,
       email,
-      password: hashedPassword,
+      password
     });
-
-    await newAdmin.save();
-
-    res.status(201).json({ msg: "Admin registered successfully" });
+    console.log(newadmin)
+    await newadmin.save();
+   
+    res.status(200).json({
+        message:"Insert addmin successfully",
+        newadmin
+    })
   } catch (err) {
-    console.error("Error in registerAdmin:", err.message);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// LOGIN ADMIN
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const admin = await Admin.findOne({ email });
-    if (!admin) return res.status(400).json({ msg: "Admin not found" });
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
-
-    const token = jwt.sign({ id:admin._id }, SECRET, { expiresIn: "1h" });
+    if (!admin || !(await admin.matchPassword(password)))
+      return res.status(401).json({ message: "Invalid credentials" });
 
     res.json({
-      token,
-      admin: { id: admin._id, username: admin.username, email: admin.email },
+      _id: admin._id,
+      name: admin.name,
+      email: admin.email,
+      token: generateToken(admin._id),
     });
-  } catch (err) {
-    console.error("Error in loginAdmin:", err.message);
-    res.status(500).json({ msg: "Server error" });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
   }
 };

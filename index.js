@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
+const adminRoutes= require("./routes/adminRoutes");
+const enquiryRoutes = require("./routes/enquiryRoutes");
 
 dotenv.config();
 const app = express();
@@ -14,13 +16,14 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api", adminRoutes); 
+app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/category", require("./routes/categoryRoutes"));
 app.use("/api/enquiry", require("./routes/enquiryRoutes"));
 
 // Default route
 app.get("/", (req, res) => {
-  res.send("server is running...");
+  res.send("Server is running...");
 });
 
 // Server listen

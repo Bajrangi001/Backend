@@ -9,6 +9,15 @@ exports.createEnquiry = async (req, res) => {
       return res.status(400).json({ msg: "All fields are required including productId" });
     }
 
+    let valideProductId = null;
+    if(productId){
+      const productExists = await Product.findById(productId);
+      if(!productExists) {
+        return res.status(400).json({ msg: "Invalid productId" });
+      }
+      valideProductId = productId;
+    }
+
     const enquiry = new Enquiry({
       firstName,
       lastName,
