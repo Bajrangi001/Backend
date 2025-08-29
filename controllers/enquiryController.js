@@ -1,26 +1,22 @@
 const Enquiry = require("../models/Enquiry");
+const Product = require("../models/productModel");
 
 // Create Enquiry (User login-free)
 exports.createEnquiry = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, subject, message, productId } = req.body;
+    const { name, email, phone, subject, message, productId } = req.body;
 
-    if (!firstName || !lastName || !email || !phone || !subject || !message || !productId) {
+    if (!name || !email || !subject || !message || !productId) {
       return res.status(400).json({ msg: "All fields are required including productId" });
     }
 
-    let valideProductId = null;
-    if(productId){
-      const productExists = await Product.findById(productId);
-      if(!productExists) {
-        return res.status(400).json({ msg: "Invalid productId" });
-      }
-      valideProductId = productId;
+    const productExists = await Product.findById(productId);
+    if (!productExists) {
+      return res.status(400).json({ msg: "Invalid productId" });
     }
 
     const enquiry = new Enquiry({
-      firstName,
-      lastName,
+      name,
       email,
       phone,
       subject,
@@ -31,8 +27,7 @@ exports.createEnquiry = async (req, res) => {
     await enquiry.save();
     res.status(201).json({ msg: "Enquiry submitted successfully", enquiry });
   } catch (err) {
-    console.error("Error in createEnquiry:", err.message);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
 
@@ -42,7 +37,6 @@ exports.getEnquiries = async (req, res) => {
     const enquiries = await Enquiry.find().populate("productId", "name category");
     res.json(enquiries);
   } catch (err) {
-    console.error("Error in getEnquiries:", err.message);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
