@@ -1,24 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const upload = require('../middleware/multerMiddleware');
-const { hardDeleteProduct } = require('../controllers/productController');
-
+const upload = require("../middleware/multerMiddleware");
 const {
   createProduct,
+  getProductsBySubCategory,
   getProducts,
+  getProductById,
   updateProduct,
-  deleteProduct
-} = require('../controllers/productController');
+  deleteProduct,
+} = require("../controllers/productController");
 
-// Public route: Get all products
-router.get('/', getProducts);
-
-// Admin routes (authentication middleware optional)
-router.post('/',upload.single('image'), createProduct);
-router.put('/:id', updateProduct);
-router.delete('/:id', deleteProduct);
-
-// Hard delete
-router.delete('/hard/:id', hardDeleteProduct);
+// Use multer for file uploads
+router.post("/", upload.single('image'), createProduct);
+router.get("/", getProducts);
+router.get("/:id", getProductById);
+router.get("/subcategory/:subCategoryid", getProductsBySubCategory);
+router.put("/:id", upload.single('image'), updateProduct);
+router.delete("/:id", deleteProduct);
 
 module.exports = router;

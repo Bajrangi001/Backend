@@ -1,21 +1,18 @@
+// routes/categoryRoutes.js
 const express = require("express");
+const router = express.Router();
 const {
   createCategory,
   getCategories,
+  getCategoryById,  // Ensure this matches the exported function name
   updateCategory,
   deleteCategory,
 } = require("../controllers/categoryController");
 
-const protect = require("../middleware/authMiddleware");
-
-const router = express.Router();
-
-// Public route
+router.post("/", createCategory);
 router.get("/", getCategories);
-
-// Admin-only routes
-router.post("/", protect, createCategory);
-router.put("/:id", protect, updateCategory);
-router.delete("/:id", protect, deleteCategory);
+router.get("/:id", getCategoryById);  // Ensure this matches the exported function name
+router.put("/:id", updateCategory);
+router.delete("/:id", deleteCategory);
 
 module.exports = router;

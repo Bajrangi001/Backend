@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
+const path = require('path');
 
 dotenv.config();
 const app = express();
@@ -13,6 +14,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files
 
 // Routes import
 const adminRoutes = require("./routes/adminRoutes");
@@ -22,7 +24,7 @@ const enquiryRoutes = require("./routes/enquiryRoutes");
 const subcategoryRoutes = require("./routes/subcategoryRoutes");
 
 // Routes use
-app.use("/api/admin", adminRoutes); 
+app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/enquiries", enquiryRoutes);

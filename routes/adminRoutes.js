@@ -6,13 +6,13 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 // Register Route
-router.post("/admin/register", registerAdmin);
+router.post("/register", registerAdmin);
 
 // Login Route
-router.post("/admin/login", loginAdmin);
+router.post("/login", loginAdmin);
 
 // Refresh token endpoint
-router.post("/admin/refresh", (req, res) => {
+router.post("/refresh", (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token provided" });
