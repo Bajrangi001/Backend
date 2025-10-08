@@ -2,7 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
-const path = require('path');
+const path = require("path");
 
 dotenv.config();
 const app = express();
@@ -14,7 +14,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve static files
 
 // Routes import
 const adminRoutes = require("./routes/adminRoutes");
@@ -22,6 +22,7 @@ const productRoutes = require("./routes/productRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
 const subcategoryRoutes = require("./routes/subcategoryRoutes");
+const subSubcategoryRoutes = require("./routes/subSubcategoryRoutes");
 
 // Routes use
 app.use("/api/admin", adminRoutes);
@@ -29,6 +30,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/subcategories", subcategoryRoutes);
+app.use("/api/subSubcategories", subSubcategoryRoutes);
 
 // Default route
 app.get("/", (req, res) => {

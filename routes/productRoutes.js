@@ -3,19 +3,19 @@ const router = express.Router();
 const upload = require("../middleware/multerMiddleware");
 const {
   createProduct,
-  getProductsBySubCategory,
   getProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  getProductsBySubCategory,
 } = require("../controllers/productController");
 
 // Use multer for file uploads
-router.post("/", upload.single('image'), createProduct);
-router.get("/", getProducts);
+router.post("/", upload.single("image"), createProduct);
+router.get("/", getProducts); // Updated to handle filters
 router.get("/:id", getProductById);
 router.get("/subcategory/:subCategoryid", getProductsBySubCategory);
-router.put("/:id", upload.single('image'), updateProduct);
+router.put("/:id", upload.single("image"), updateProduct);
 router.delete("/:id", deleteProduct);
 
 module.exports = router;

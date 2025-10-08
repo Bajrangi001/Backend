@@ -2,22 +2,9 @@ const Product = require("../models/productModel");
 const Subcategory = require("../models/Subcategory");
 
 // Create a new product
-const getProductsBySubCategory = async (req, res) => {
-  try {
-   const { subcategoryid } = req.params;
-    const products = await Product.find({ subcategory: subcategoryid });
-    if (!products || products.length === 0) {
-      return res.status(404).json({ message: "No products found for the subcategory" });
-    }
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-    }
-  
-}
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, subcategory } = req.body;
+    const { name, description, price, category, subcategory, filters } = req.body;
     if (!name || !price || !category || !subcategory) {
       return res
         .status(400)
@@ -29,6 +16,9 @@ const createProduct = async (req, res) => {
     const productData = { name, description, price, category, subcategory };
     if (req.file) {
       productData.image = req.file.path;
+    }
+    if (filters && (filters.color || filters.material)) {
+      productData.filters = filters;
     }
 
     const product = new Product(productData);
@@ -45,20 +35,42 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Get all products, optionally filtered by subcategory
+// Get all products, optionally filtered by subcategory or filters
 const getProducts = async (req, res) => {
   try {
     let query = {};
 
-    // If subcategoryId is provided in the query parameters, filter by subcategory
+    // Filter by subcategory if provided
     if (req.query.subcategoryId) {
       query.subcategory = req.query.subcategoryId;
+    }
+
+    // Filter by color or material if provided
+    if (req.query.color) {
+      query["filters.color"] = req.query.color;
+    }
+    if (req.query.material) {
+      query["filters.material"] = req.query.material;
     }
 
     const products = await Product.find(query)
       .populate("category", "name")
       .populate("subcategory", "name");
 
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get products by subcategory
+const getProductsBySubCategory = async (req, res) => {
+  try {
+    const { subcategoryid } = req.params;
+    const products = await Product.find({ subcategory: subcategoryid });
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: "No products found for the subcategory" });
+    }
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -81,10 +93,13 @@ const getProductById = async (req, res) => {
 // Update a product
 const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, subcategory } = req.body;
+    const { name, description, price, category, subcategory, filters } = req.body;
     const productData = { name, description, price, category, subcategory };
     if (req.file) {
       productData.image = req.file.path;
+    }
+    if (filters && (filters.color || filters.material)) {
+      productData.filters = filters;
     }
 
     const product = await Product.findByIdAndUpdate(

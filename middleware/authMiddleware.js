@@ -29,4 +29,4 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = protect;
+module.exports = { protect }; // Changed to object export for destructuring

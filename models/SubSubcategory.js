@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const subcategorySchema = new mongoose.Schema(
+const subSubcategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Subcategory name is required"],
+      required: [true, "Sub-subcategory name is required"],
       trim: true,
     },
     description: {
@@ -12,10 +12,10 @@ const subcategorySchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
-    category: {
+    parentSubcategory: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: [true, "Category is required"],
+      ref: "Subcategory",
+      required: [true, "Parent subcategory is required"],
     },
     products: [
       {
@@ -27,4 +27,4 @@ const subcategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Subcategory", subcategorySchema);
+module.exports = mongoose.model("SubSubcategory", subSubcategorySchema);
