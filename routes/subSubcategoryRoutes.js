@@ -7,12 +7,15 @@ const {
   updateSubSubcategory,
   deleteSubSubcategory,
 } = require("../controllers/subSubcategoryController");
-const { authMiddleware } = require("../middleware/auth");
+const { protect } = require("../middleware/authMiddleware"); // Updated to match the export
 
+// Public GET routes
 router.get("/", getSubSubcategories);
 router.get("/:id", getSubSubcategoryById);
-router.post("/", authMiddleware, createSubSubcategory);
-router.put("/:id", authMiddleware, updateSubSubcategory);
-router.delete("/:id", authMiddleware, deleteSubSubcategory);
+
+// Protected routes
+router.post("/", protect, createSubSubcategory); // Line 14 should be this
+router.put("/:id", protect, updateSubSubcategory);
+router.delete("/:id", protect, deleteSubSubcategory);
 
 module.exports = router;

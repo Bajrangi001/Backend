@@ -3,9 +3,9 @@ const SubSubcategory = require("../models/SubSubcategory");
 // Create a new sub-subcategory
 const createSubSubcategory = async (req, res) => {
   try {
-    if (req.user?.role !== "admin") {
-      return res.status(403).json({ message: "Admin access required" });
-    }
+    // if (req.user?.role !== "admin") {
+    //   return res.status(403).json({ message: "Admin access required" });
+    // }
     const { name, description, parentSubcategory } = req.body;
     if (!name || !parentSubcategory) {
       return res.status(400).json({ message: "Name and parent subcategory are required" });

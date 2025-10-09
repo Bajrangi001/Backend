@@ -1,14 +1,13 @@
-const express = require('express');
-const createEnquiry = require('../controllers/enquiryController');
-const getEnquiries = require('../controllers/enquiryController');
-const authMiddleware = require('../middleware/authMiddleware');
-  const protect = require('../middleware/authMiddleware');  
-
+const express = require("express");
+const { createEnquiry, getEnquiries } = require("../controllers/enquiryController");
+const { protect } = require("../middleware/authMiddleware"); // Updated to match file name
 
 const router = express.Router();
 
-router.post('/', createEnquiry);
+// Protected POST route (assuming admin-only)
+router.post("/", protect, createEnquiry);
 
-router.get('/', protect, getEnquiries);
+// Protected GET route
+router.get("/", protect, getEnquiries);
 
 module.exports = router;

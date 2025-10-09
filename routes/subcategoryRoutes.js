@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
-// const protect = require("../middleware/protect"); // Import the protect middleware
+const { protect } = require("../middleware/authMiddleware"); // Destructure protect from authMiddleware
 const {
   createSubcategory,
   getSubcategories,
   getSubcategoryById,
   updateSubcategory,
-  deleteSubcategory
+  deleteSubcategory,
 } = require("../controllers/subcategoryController");
-const protect = require("../middleware/authMiddleware");
 
-// Apply the protect middleware to all routes that require authentication
+// Protected routes
 router.post("/", protect, createSubcategory);
 router.get("/", protect, getSubcategories);
 router.get("/:id", protect, getSubcategoryById);

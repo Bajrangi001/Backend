@@ -1,34 +1,32 @@
-// utils/seedAdmin.js
-const dotenv = require("dotenv");
-const mongoose = require("mongoose"); 
 const bcrypt = require("bcryptjs");
-const connectDB = require("../config/db.js");
 const Admin = require("../models/Admin.js");
-
-dotenv.config();
 
 const seedAdmin = async () => {
   try {
-    await connectDB();
+    const email = "admin@example.com";
+    const password = "Admin@123";
 
-    const email = process.env.SEED_ADMIN_EMAIL || "admin@example.com";
-    const pass = process.env.SEED_ADMIN_PASS || "Admin@123";
+    const existingAdmin = await Admin.findOne({ email });
 
-    let admin = await Admin.findOne({ email });
-    if (!admin) {
+    if (!existingAdmin) {
       const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(pass, salt);
-      admin = await Admin.create({ name: "Admin", email, password: hashed });
-      console.log("✅ Admin created:", email, "password:", pass);
-    } else {
-      console.log("ℹ️ Admin already exists:", email);
-    }
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-    process.exit(0);
-  } catch (e) {
-    console.error("❌ Seed error:", e.message);
-    process.exit(1);
+      await Admin.create({
+        name: "Admin",
+        email,
+        password: hashedPassword,
+      });
+
+      console.log("✅ Seed admin created successfully!");
+      console.log("➡️ Email:", email);
+      console.log("➡️ Password:", password);
+    } else {
+      console.log("ℹ️ Admin already exists:", existingAdmin.email);
+    }
+  } catch (err) {
+    console.error("❌ Seed error:", err.message);
   }
 };
 
-seedAdmin();
+module.exports = seedAdmin;

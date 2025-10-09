@@ -1,22 +1,28 @@
+// routes/adminRoutes.js
 const express = require("express");
-const { registerAdmin, loginAdmin } = require("../controllers/adminController");
-const { generateAccessToken } = require("../config/jwt");
+const {
+  loginAdmin,
+  changePassword
+} = require("../controllers/adminController");
+const { protect } = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
+const { generateAccessToken } = require("../config/jwt");
 
 const router = express.Router();
 
-// Register Route
-router.post("/register", registerAdmin);
-
-// Login Route
+// 🟢 Admin Login
 router.post("/login", loginAdmin);
 
-// Refresh token endpoint
+// 🟢 Change Password (JWT Protected)
+router.post("/change-password", protect, changePassword);
+
+// 🟢 Refresh Token Endpoint (optional)
 router.post("/refresh", (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token provided" });
   }
+
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const accessToken = generateAccessToken({ _id: decoded.id });
@@ -26,9 +32,9 @@ router.post("/refresh", (req, res) => {
   }
 });
 
-// Example POST route
-router.post('/admin', (req, res) => {
-    res.send('Admin POST route working!');
+// 🧪 Optional: test route
+router.get("/", (req, res) => {
+  res.send("✅ Admin routes working!");
 });
 
 module.exports = router;
