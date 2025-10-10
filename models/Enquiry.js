@@ -7,7 +7,12 @@ const enquirySchema = new mongoose.Schema(
     phone: { type: String },
     subject: { type: String, required: true },
     message: { type: String, required: true },
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+    status: {
+      type: String,
+      enum: ["Pending", "Resolved", "Rejected"],
+      default: "Pending"
+    },
   },
   { timestamps: true }
 );

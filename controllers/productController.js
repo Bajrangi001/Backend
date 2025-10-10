@@ -4,16 +4,16 @@ const Subcategory = require("../models/Subcategory");
 // Create a new product
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, subcategory, filters } = req.body;
-    if (!name || !price || !category || !subcategory) {
+    const { name, description, category, subcategory, filters } = req.body;
+    if (!name || !category || !subcategory) {
       return res
         .status(400)
         .json({
-          message: "Name, price, category, and subcategory are required",
+          message: "Name, category, and subcategory are required",
         });
     }
 
-    const productData = { name, description, price, category, subcategory };
+    const productData = { name, description, category, subcategory };
     if (req.file) {
       productData.image = req.file.path;
     }
@@ -93,8 +93,8 @@ const getProductById = async (req, res) => {
 // Update a product
 const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, subcategory, filters } = req.body;
-    const productData = { name, description, price, category, subcategory };
+    const { name, description, category, subcategory, filters } = req.body;
+    const productData = { name, description, category, subcategory };
     if (req.file) {
       productData.image = req.file.path;
     }

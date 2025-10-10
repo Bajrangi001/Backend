@@ -1,13 +1,20 @@
 const express = require("express");
-const { createEnquiry, getEnquiries } = require("../controllers/enquiryController");
-const { protect } = require("../middleware/authMiddleware"); // Updated to match file name
-
+const {
+  createEnquiry,
+  getEnquiries,
+  getEnquiryById,
+  updateEnquiry,
+  deleteEnquiry,
+} = require("../controllers/enquiryController");
+const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
-// Protected POST route (assuming admin-only)
-router.post("/", protect, createEnquiry);
-
-// Protected GET route
+// Public route (if needed, otherwise use protect)
+router.post("/", createEnquiry);
+// Protected routes (Admin)
 router.get("/", protect, getEnquiries);
+router.get("/:id", protect, getEnquiryById);
+router.put("/:id", protect, updateEnquiry);
+router.delete("/:id", protect, deleteEnquiry);
 
 module.exports = router;
