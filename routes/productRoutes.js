@@ -10,12 +10,11 @@ const {
   getProductsBySubCategory,
 } = require("../controllers/productController");
 
-// Use multer for file uploads
-router.post("/", upload.single("image"), createProduct);
-router.get("/", getProducts); // Updated to handle filters
+router.post("/", upload.fields([{ name: "image", maxCount: 1 }, { name: "thumbImages", maxCount: 4 }]), createProduct);
+router.get("/", getProducts);
 router.get("/:id", getProductById);
 router.get("/subcategory/:subCategoryid", getProductsBySubCategory);
-router.put("/:id", upload.single("image"), updateProduct);
+router.put("/:id", upload.fields([{ name: "image", maxCount: 1 }, { name: "thumbImages", maxCount: 4 }]), updateProduct);
 router.delete("/:id", deleteProduct);
 
 module.exports = router;

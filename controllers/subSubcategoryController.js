@@ -6,17 +6,17 @@ const createSubSubcategory = async (req, res) => {
     // if (req.user?.role !== "admin") {
     //   return res.status(403).json({ message: "Admin access required" });
     // }
-    const { name, description, parentSubcategory } = req.body;
-    if (!name || !parentSubcategory) {
+    const { name, description, Subcategory } = req.body;
+    if (!name || !Subcategory) {
       return res.status(400).json({ message: "Name and parent subcategory are required" });
     }
 
-    const existingSubSubcategory = await SubSubcategory.findOne({ name, parentSubcategory });
+    const existingSubSubcategory = await SubSubcategory.findOne({ name, Subcategory });
     if (existingSubSubcategory) {
       return res.status(400).json({ message: "Sub-subcategory already exists for this subcategory" });
     }
 
-    const subSubcategory = await SubSubcategory.create({ name, description, parentSubcategory });
+    const subSubcategory = await SubSubcategory.create({ name, description, Subcategory });
     res.status(201).json(subSubcategory);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -27,7 +27,7 @@ const createSubSubcategory = async (req, res) => {
 const getSubSubcategories = async (req, res) => {
   try {
     const subSubcategories = await SubSubcategory.find().sort({ createdAt: -1 })
-      .populate("parentSubcategory")
+      .populate("Subcategory")
       .populate("products");
     res.json(subSubcategories);
   } catch (error) {
@@ -39,7 +39,7 @@ const getSubSubcategories = async (req, res) => {
 const getSubSubcategoryById = async (req, res) => {
   try {
     const subSubcategory = await SubSubcategory.findById(req.params.id)
-      .populate("parentSubcategory")
+      .populate("Subcategory")
       .populate("products");
     if (!subSubcategory) return res.status(404).json({ message: "Sub-subcategory not found" });
     res.json(subSubcategory);

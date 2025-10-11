@@ -10,11 +10,12 @@ const {
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(email,password)
 
     // Check if admin exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "admin not found" });
     }
 
     // Compare password

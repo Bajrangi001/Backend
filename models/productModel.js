@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+const colorSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  class: { type: String, required: true }
+});
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -16,6 +21,14 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    thumbImages: {
+      type: [String],
+      default: [],
+    },
+    colors: {
+      type: [colorSchema],
+      default: [],
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -26,15 +39,24 @@ const productSchema = new mongoose.Schema(
       ref: "Subcategory",
       required: [true, "Product subcategory is required"],
     },
+    features: {
+      type: [String],
+      default: [],
+    },
+    specifications: {
+      dimensions: { type: String },
+      seatingHeight: { type: String },
+      material: { type: String },
+    },
     filters: {
       color: {
         type: String,
-        enum: ["purple", "green", "red", "brown"], // Based on the color circles
+        enum: ["purple", "green", "red", "brown"],
         default: null,
       },
       material: {
         type: String,
-        enum: ["Silk", "Velvet", "Polyester"], // Based on the material dropdown
+        enum: ["Silk", "Velvet", "Polyester"],
         default: null,
       },
     },

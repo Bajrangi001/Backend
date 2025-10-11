@@ -9,13 +9,13 @@ const seedAdmin = async () => {
     const existingAdmin = await Admin.findOne({ email });
 
     if (!existingAdmin) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      // const salt = await bcrypt.genSalt(10);
+      // const hashedPassword = await bcrypt.hash(password, salt);
 
       await Admin.create({
         name: "Admin",
         email,
-        password: hashedPassword,
+        password,
       });
 
       console.log("✅ Seed admin created successfully!");
