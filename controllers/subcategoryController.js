@@ -28,12 +28,23 @@ const createSubcategory = async (req, res) => {
 // Get all subcategories
 const getSubcategories = async (req, res) => {
   try {
-    const subcategories = await Subcategory.find().populate("category", "name");
+    // Extract categoryId from query parameters
+    const { categoryId } = req.query;
+
+    // Create filter condition dynamically
+    const filter = categoryId ? { category: categoryId } : {};
+
+    // Fetch subcategories based on filter
+    const subcategories = await Subcategory.find(filter)
+      .populate("category", "name");
+
+    // Send response
     res.json(subcategories);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Get a single subcategory by ID with products
 const getSubcategoryById = async (req, res) => {

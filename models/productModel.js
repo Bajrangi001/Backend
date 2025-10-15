@@ -32,12 +32,12 @@ const productSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: [true, "Product category is required"],
+      // required: [true, "Product category is required"],
     },
     subcategory: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subcategory",
-      required: [true, "Product subcategory is required"],
+      // required: [true, "Product subcategory is required"],
     },
     features: {
       type: [String],
