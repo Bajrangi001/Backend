@@ -22,7 +22,7 @@ const protect = async (req, res, next) => {
 
       // Fetch admin from DB (excluding password)
       req.admin = await Admin.findById(decoded.id).select("-password");
-
+console.log(req.admin);
       // Check if admin exists and is an admin
       if (!req.admin) {
         return res.status(401).json({
@@ -32,7 +32,7 @@ const protect = async (req, res, next) => {
       }
 
       // Optional: Check if the user is an admin (if your Admin model has `isAdmin` field)
-      if (req.admin.role !== "admin") {  // Replace "role" with your actual field (e.g., "isAdmin")
+      if (req.admin.name !== "Admin") {  // Replace "role" with your actual field (e.g., "isAdmin")
         return res.status(403).json({
           success: false,
           message: "Not authorized as admin",

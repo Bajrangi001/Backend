@@ -1,7 +1,35 @@
 const Product = require("../models/productModel");
 const Subcategory = require("../models/Subcategory");
+const jwt = require("jsonwebtoken");
 
-// Create a new product
+// Middleware to verify JWT token
+const protect = async (req, res, next) => {
+  let token;
+
+  // Check for token in Authorization header
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+
+      // Verify token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Attach user to request object (optional, if you need user info)
+      req.user = decoded;
+
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: "Not authorized, token failed" });
+    }
+  } else {
+    return res.status(401).json({ message: "Not authorized, no token" });
+  }
+};
+
+// Create a new product (protected)
 const createProduct = async (req, res) => {
   try {
     const { name, description, category, subcategory, filters, colors, features, specifications } = req.body;
@@ -44,7 +72,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Get all products, optionally filtered by subcategory or filters
+// Get all products, optionally filtered by subcategory or filters (unprotected)
 const getProducts = async (req, res) => {
   try {
     let query = {};
@@ -66,7 +94,7 @@ const getProducts = async (req, res) => {
   }
 };
 
-// Get products by subcategory
+// Get products by subcategory (protected)
 const getProductsBySubCategory = async (req, res) => {
   try {
     const { subcategoryid } = req.params;
@@ -80,7 +108,7 @@ const getProductsBySubCategory = async (req, res) => {
   }
 };
 
-// Get a single product by ID
+// Get a single product by ID (unprotected)
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
@@ -93,7 +121,7 @@ const getProductById = async (req, res) => {
   }
 };
 
-// Update a product
+// Update a product (protected)
 const updateProduct = async (req, res) => {
   try {
     const { name, description, category, subcategory, filters, colors, features, specifications } = req.body;
@@ -135,7 +163,7 @@ const updateProduct = async (req, res) => {
   }
 };
 
-// Delete a product
+// Delete a product (protected)
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -151,10 +179,10 @@ const deleteProduct = async (req, res) => {
 };
 
 module.exports = {
-  createProduct,
+  createProduct: [protect, createProduct],
   getProducts,
   getProductById,
-  updateProduct,
-  getProductsBySubCategory,
-  deleteProduct,
+  updateProduct: [protect, updateProduct],
+  getProductsBySubCategory: [protect, getProductsBySubCategory],
+  deleteProduct: [protect, deleteProduct],
 };
