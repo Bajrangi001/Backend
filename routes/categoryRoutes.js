@@ -8,11 +8,12 @@ const {
   updateCategory,
   deleteCategory,
 } = require("../controllers/categoryController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/", createCategory);
+router.post("/", protect, createCategory);
 router.get("/", getCategories);
 router.get("/:id", getCategoryById);  // Ensure this matches the exported function name
-router.put("/:id", updateCategory);
-router.delete("/:id", deleteCategory);
+router.put("/:id", protect, updateCategory);
+router.delete("/:id", protect, deleteCategory);
 
 module.exports = router;
