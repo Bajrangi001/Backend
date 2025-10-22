@@ -97,8 +97,10 @@ const getProducts = async (req, res) => {
 // Get products by subcategory (protected)
 const getProductsBySubCategory = async (req, res) => {
   try {
-    const { subcategoryid } = req.params;
-    const products = await Product.find({ subcategory: subcategoryid });
+    const { subCategoryid } = req.params;
+    const products = await Product.find({ subcategory: subCategoryid })
+      .populate("category", "name")
+      .populate("subcategory", "name");
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "No products found for the subcategory" });
     }
@@ -183,6 +185,6 @@ module.exports = {
   getProducts,
   getProductById,
   updateProduct: [protect, updateProduct],
-  getProductsBySubCategory: [protect, getProductsBySubCategory],
+  getProductsBySubCategory,
   deleteProduct: [protect, deleteProduct],
 };

@@ -22,7 +22,7 @@ const protect = async (req, res, next) => {
 
       // Fetch admin from DB (excluding password)
       req.admin = await Admin.findById(decoded.id).select("-password");
-console.log(req.admin);
+      console.log(req.admin);
       // Check if admin exists and is an admin
       if (!req.admin) {
         return res.status(401).json({
