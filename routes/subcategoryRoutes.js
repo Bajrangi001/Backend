@@ -12,7 +12,7 @@ const {
 // Protected routes
 router.post("/", protect, createSubcategory);
 router.get("/",  getSubcategories);
-router.get("/:id", protect, getSubcategoryById);
+router.get("/:id",  getSubcategoryById);
 router.put("/:id", protect, updateSubcategory);
 router.delete("/:id", protect, deleteSubcategory);
 
