@@ -76,8 +76,6 @@ const createProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     let query = {};
-
-    // 🧩 Apply filters
     if (req.query.subcategoryId) {
       query.subcategory = req.query.subcategoryId;
     }
@@ -87,13 +85,9 @@ const getProducts = async (req, res) => {
     if (req.query.material) {
       query["filters.material"] = req.query.material;
     }
-
-    // 🧠 Fetch and sort latest first
     const products = await Product.find(query)
       .populate("category", "name")
-      .populate("subcategory", "name")
-      .sort({ createdAt: -1 }); // 👈 Latest products first
-
+      .populate("subcategory", "name");
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
